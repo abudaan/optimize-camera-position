@@ -9,6 +9,7 @@ const {
 export default function init() {
   const scene = new THREE.Scene();
   const initialRatio = 300 / 1500;
+  let prev = 1000;
 
   const renderer = new THREE.WebGLRenderer({ autoClear: true, antialias: true, alpha: true });
   // renderer.setClearColor(0xaa0033, 1);
@@ -79,84 +80,32 @@ export default function init() {
     */
     const aspect = width / height;
     const radVFOV = degToRad(camera.fov);
-    const radHFOV = 2 * Math.atan(Math.tan(radVFOV / 2) * aspect);
     const tanVFOV = Math.tan(radVFOV / 2);
-    const tanHFOV = Math.tan(radHFOV / 2);
 
-    // get height
-    const h = 2 * tanVFOV * camera.position.z;
+    // get width and height of scene
+    const h = 2 * tanVFOV * (camera.position.z);
     const w = h * aspect;
-    // check height by calculating the fov based on this height
-    const b = Math.atan((h / 2) / camera.position.z);
-    // console.log(camera.fov, a, radToDeg(b));
 
-    const radHFOV2 = 2 * Math.atan((w / 2) / camera.position.z);
+    // dist = height / 2 / tan;
+    // 4 = 24 / 3 / 2
+    // 24 = 4 * 3 * 2
 
-    // console.log(radHFOV, radHFOV2);
-    // const h = height;
-    // const vFOV = camera.fov;
-    // const a = Math.tan(vFOV / 2);
-    // const distance = h / a / 2;
-    // console.log(h, vFOV, distance);
-    // const focalLength = 25.734; // equivalent to FOV=50
-    // const distance = 1000 / Math.tan(camera.fov / focalLength);
+    // calculate maximal scale
+    const scale = w / prev;
+    const h2 = scale * h;
+    const dist = h2 / 2 / tanVFOV;
+    // const dist = camera.position.z;
 
-    // console.log(distance);
+    prev *= scale;
 
-
-    // const vWidth = width;
-    // const vHeight = width / aspect;
-    const dist1 = height / 2 / tanVFOV;
-    const dist2 = width / 2 / tanHFOV;
-    // console.log(dist2, camera.position.z);
-    // const dist = width > height ? dist1 : dist2;
-    // console.log(dist1, dist2, width, height);
-    // const dist = Math.max(dist2, dist1);
-    const dist = dist1;
-    // console.log(width / height, dist);
-
-    // fov = 2 * Math.atan( ( width / aspect ) / ( 2 * dist ) ) * ( 180 / Math.PI );
-
-    // camera.fov / 2 = (Math.atan(height / (2 * dist))); // * ( 180 / Math.PI );
-
-    // THREE.Math.radToDeg((Math.atan(height / (2 * dist)))) = 25
-
-    // const vHeight = height;
-    // const vHeight = width / aspect;
-    // const dist = vHeight / 2 / (Math.tan(vFOV / 2));
-
-
-    // const dist = Math.abs(width * Math.sin(THREE.Math.degToRad(camera.fov / 2)));
-
-    // console.log(vHeight, vWidth, dist);
-    // console.log(dist, camera.position);
-
-
-    // const dist = Math.abs(1000 / Math.sin(vFOV / 2));
-    // const h = 2 * tan * (camera.position.z);
-    // const h = 2 * tan * 1353.7499999999995;
-    // console.log(h);
-
-    // const w = h * aspect;
-    // console.log(width, height * aspect);
-    // console.log(h * aspect, h);
-    // console.log(width, height);
-    // const scale = w / 1000;
-    // const h2 = scale * h;
-    // const dist = h2 / 2 / tan;
-
-    // console.log(width, height);
-    // console.log(scale);
-
+    console.log('window', width, height);
+    console.log('scene', w, h);
+    console.log('scale', scale);
+    console.log('dist', dist);
 
     camera.position.z = dist;
-    camera.position.y = camera.position.z * initialRatio;
+    camera.position.y = dist * initialRatio;
 
-    console.log('H', height, dist1);
-    console.log('W', width, dist2);
-
-
-    // camera.position.z = distance;
     camera.aspect = aspect;
     camera.updateProjectionMatrix();
     renderer.setSize(width, height);
