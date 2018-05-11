@@ -96,11 +96,8 @@ export default function init() {
     console.log('scale', scale);
     console.log('dist', dist);
 
-    camera.position.z = dist + (1000 / 2 / scale);
-    // camera.position.z = dist - 500;
+    camera.position.z = dist + 500;
     camera.position.y = camera.position.z * initialRatio;
-    // camera.position.z = dist;
-    // camera.position.y = dist * initialRatio;
 
     camera.aspect = aspect;
     camera.updateProjectionMatrix();
