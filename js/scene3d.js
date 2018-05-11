@@ -9,7 +9,7 @@ const {
 export default function init() {
   const scene = new THREE.Scene();
   const initialRatio = 300 / 1500;
-  let prev = 1000;
+  const prev = 1000;
 
   const renderer = new THREE.WebGLRenderer({ autoClear: true, antialias: true, alpha: true });
   // renderer.setClearColor(0xaa0033, 1);
@@ -40,6 +40,7 @@ export default function init() {
 
   const world = new THREE.Mesh(
     new THREE.PlaneGeometry(1000, 1000, 10, 10),
+    // new THREE.BoxGeometry(500, 500, 500),
     new THREE.MeshBasicMaterial({ color: 0x000000, wireframe: true })
   );
   // const world = new THREE.Object3D();
@@ -60,12 +61,6 @@ export default function init() {
   // controls.keys = {};
   controls.addEventListener('change', () => {
     console.log(camera.position);
-    const vFOVRadians = THREE.Math.degToRad(camera.fov);
-    const tan = Math.tan(vFOVRadians / 2);
-    const h = 2 * tan * (camera.position.z);
-    // console.log('vis h', h);
-    // console.log('ratio', camera.position.y / camera.position.z);
-
     render();
   });
 
@@ -83,7 +78,7 @@ export default function init() {
     const tanVFOV = Math.tan(radVFOV / 2);
 
     // get width and height of scene
-    const h = 2 * tanVFOV * (camera.position.z);
+    const h = 2 * tanVFOV * camera.position.z;
     const w = h * aspect;
 
     // dist = height / 2 / tan;
@@ -91,20 +86,21 @@ export default function init() {
     // 24 = 4 * 3 * 2
 
     // calculate maximal scale
-    const scale = w / prev;
-    const h2 = scale * h;
+    const scale = w / 1000;
+    const h2 = h / scale;
     const dist = h2 / 2 / tanVFOV;
     // const dist = camera.position.z;
-
-    prev *= scale;
 
     console.log('window', width, height);
     console.log('scene', w, h);
     console.log('scale', scale);
     console.log('dist', dist);
 
-    camera.position.z = dist;
-    camera.position.y = dist * initialRatio;
+    camera.position.z = dist + (1000 / 2 / scale);
+    // camera.position.z = dist - 500;
+    camera.position.y = camera.position.z * initialRatio;
+    // camera.position.z = dist;
+    // camera.position.y = dist * initialRatio;
 
     camera.aspect = aspect;
     camera.updateProjectionMatrix();
