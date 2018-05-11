@@ -1,6 +1,9 @@
 import THREE from 'three';
 import './lib/OrbitControls';
 
+const degToRad = THREE.Math.degToRad;
+const radToDeg = THREE.Math.radToDeg;
+
 export default function init() {
   const scene = new THREE.Scene();
   const initialRatio = 300 / 1500;
@@ -53,20 +56,35 @@ export default function init() {
   const controls = new THREE.OrbitControls(camera, renderer.domElement);
   // controls.keys = {};
   controls.addEventListener('change', () => {
-    // console.log(camera.position, camera.fov);
+    console.log(camera.position);
+    const vFOVRadians = THREE.Math.degToRad(camera.fov);
+    const tan = Math.tan(vFOVRadians / 2);
+    const h = 2 * tan * (camera.position.z);
+    console.log('vis h', h);
+    console.log('ratio', camera.position.y / camera.position.z);
+
     render();
   });
 
 
   function resize(width, height) {
-    // console.log(width,height);
-    // const distance;
-    // const height = 2 * Math.tan( ( vFOV / 2 ) ) * distance;
-    // const vFOV = 2 * Math.atan(height / (2 * distance));
-    // const d = 4;
-    // const f = 3
-    // const h = 2 * f * d; // 24
-    // console.log(24 / 3 / 2);
+    /*
+      tan = opp / adj
+      tan = Y / Z
+
+      Y = Z * tan(vof) -> height
+      Z = Y / tan(vof) -> distance
+    */
+    const aspect = width / height;
+    const vFOV = degToRad(camera.fov);
+    const hFOV = 2 * Math.atan(Math.tan(vFOV / 2) * aspect);
+    const tan = Math.tan(vFOV / 2);
+
+    // get height
+    const a = 2 * tan * camera.position.z;
+    // check height by calculating the fov based on this height
+    const b = Math.atan((a / 2) / camera.position.z);
+    // console.log(camera.fov, a, radToDeg(b));
 
     // const h = height;
     // const vFOV = camera.fov;
@@ -78,27 +96,16 @@ export default function init() {
 
     // console.log(distance);
 
-    /*
-    tan = opp / adj
-    tan = y / z
-    z = y / tan
-    y = z * tan
-
-
-    */
-
-    const aspect = width / height;
-    // const vFOV = THREE.Math.radToDeg(2 * Math.atan(Math.tan(THREE.Math.degToRad(camera.fov) * 0.5) / camera.zoom));
-    // console.log(vFOV, camera.fov);
-    const vFOV = THREE.Math.degToRad(camera.fov);
-    const hFOV = 2 * Math.atan(Math.tan(vFOV / 2) * aspect);
-
 
     // const vWidth = width;
     // const vHeight = width / aspect;
     const dist1 = height / 2 / (Math.tan(vFOV / 2));
-    const dist2 = height / 2 / (Math.tan(hFOV / 2));
-    const dist = width > height ? dist2 : dist1;
+    const dist2 = width / 2 / (Math.tan(hFOV / 2));
+    // const dist = width > height ? dist1 : dist2;
+    // console.log(dist1, dist2, width, height);
+    // const dist = Math.max(dist2, dist1);
+    // const dist = dist1;
+    // console.log(width / height, dist);
 
     // fov = 2 * Math.atan( ( width / aspect ) / ( 2 * dist ) ) * ( 180 / Math.PI );
 
@@ -114,14 +121,36 @@ export default function init() {
     // const dist = Math.abs(width * Math.sin(THREE.Math.degToRad(camera.fov / 2)));
 
     // console.log(vHeight, vWidth, dist);
-    console.log(dist, camera.position);
-    camera.position.z = dist + 500;
-    camera.position.y = camera.position.z * initialRatio;
+    // console.log(dist, camera.position);
+
+
+    // const dist = Math.abs(1000 / Math.sin(vFOV / 2));
+    // const h = 2 * tan * (camera.position.z);
+    const h = 2 * tan * 1353.7499999999995;
+    console.log(h);
+
+    const w = h * aspect;
+    // console.log(width, height * aspect);
+    // console.log(h * aspect, h);
+    // console.log(width, height);
+    const scale = w / 1000;
+    const h2 = scale * h;
+    const dist = h2 / 2 / tan;
+
+    // console.log(width, height);
+    // console.log(scale);
+
+
+    // camera.position.z = dist;
+    // camera.position.y = camera.position.z * initialRatio;
+
+    // console.log(camera.position.z);
 
 
     // camera.position.z = distance;
-    camera.aspect = width / height;
+    camera.aspect = aspect;
     camera.updateProjectionMatrix();
+    // console.log(camera.projectionMatrix);
     renderer.setSize(width, height);
     render();
   }
