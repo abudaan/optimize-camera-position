@@ -7,15 +7,3 @@ body{
   font-size: 12px;
   padding: 5px;
 }
-span{
-}
-input[type='button']{
-  font-family: monospace;
-  font-size: 12px;
-}
-#hidden{
-  display: none;
-}
-#load-files{
-  min-height: 20px;
-}
