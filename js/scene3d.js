@@ -6,13 +6,14 @@ const {
   // radToDeg,
 } = THREE.Math;
 
-
+// Some contants
 const cameraFOV = 50;
 const radVFOV = degToRad(cameraFOV);
 const tanVFOV = Math.tan(radVFOV / 2);
 const initialCameraZ = 1500;
 const initialCameraY = 300;
 const initialRatio = initialCameraY / initialCameraZ;
+const objectSize = 1000;
 
 const init = () => {
   const scene = new THREE.Scene();
@@ -23,7 +24,7 @@ const init = () => {
   renderer.shadowMap.soft = true;
   renderer.shadowMap.type = THREE.PCFSoftShadowMap;
 
-  const camera = new THREE.PerspectiveCamera(cameraFOV, 1, 1, 10000);
+  const camera = new THREE.PerspectiveCamera(cameraFOV, 1, 1, objectSize * 10);
   camera.position.x = 0;
   camera.position.y = initialCameraY;
   camera.position.z = initialCameraZ;
@@ -46,7 +47,7 @@ const init = () => {
   scene.add(spot);
 
   const world = new THREE.Mesh(
-    new THREE.PlaneGeometry(1000, 1000, 10, 10),
+    new THREE.PlaneGeometry(objectSize, objectSize, 10, 10),
     // new THREE.BoxGeometry(500, 500, 500),
     new THREE.MeshBasicMaterial({ color: 0x000000, wireframe: true })
   );
@@ -62,7 +63,6 @@ const init = () => {
   scene.add(light);
 
   const controls = new THREE.OrbitControls(camera, renderer.domElement);
-  // controls.keys = {};
   controls.addEventListener('change', () => {
     console.log(camera.position);
     render();
@@ -85,7 +85,7 @@ const init = () => {
     const w = h * aspect;
 
     // calculate maximal scale
-    const scale = w / 1000;
+    const scale = w / objectSize;
     const h2 = h / scale;
     const dist = h2 / 2 / tanVFOV;
 
@@ -94,7 +94,7 @@ const init = () => {
     console.log('scale', scale);
     console.log('dist', dist);
 
-    camera.position.z = dist + 500;
+    camera.position.z = dist + (objectSize / 2);
     camera.position.y = camera.position.z * initialRatio;
 
     camera.aspect = aspect;
