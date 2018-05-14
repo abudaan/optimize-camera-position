@@ -16,9 +16,6 @@
     "local-web-server": "^2.5.1",
     "watchify": "^3.11.0"
   },
-  "engines": {
-    "node": "0.10.x"
-  },
   "scripts": {
     "start": "ws -p 7070",
     "build": "browserify js/app.js -t [ babelify --sourceMapRelative ./js ] --debug | exorcist build/build.js.map > build/build.js ",
