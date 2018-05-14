@@ -64,8 +64,9 @@ const init = () => {
 
   const controls = new THREE.OrbitControls(camera, renderer.domElement);
   controls.addEventListener('change', () => {
-    console.log(camera.position);
-    render();
+    // disable for now
+    // console.log(camera.position);
+    // render();
   });
 
   /**
