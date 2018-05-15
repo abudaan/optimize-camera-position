@@ -13,6 +13,7 @@ const tanVFOV = Math.tan(radVFOV / 2);
 const initialCameraZ = 1500;
 const initialCameraY = 300;
 const initialRatio = initialCameraY / initialCameraZ;
+// console.log(radToDeg(Math.atan(initialCameraY / initialCameraZ)));
 const objectSize = 1000;
 
 const init = () => {
@@ -93,7 +94,8 @@ const init = () => {
     console.log('window', width, height);
     console.log('scene', w, h);
     console.log('scale', scale);
-    console.log('dist', dist);
+    console.log('aspect', aspect);
+    console.log('distance', dist);
 
     camera.position.z = dist + (objectSize / 2);
     camera.position.y = camera.position.z * initialRatio;
